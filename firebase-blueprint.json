@@ -1,0 +1,136 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Private user settings and consent preferences for Subconscious AI.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Authenticated Firebase UID owning this profile."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Optional user display name."
+        },
+        "memoryEnabled": {
+          "type": "boolean",
+          "description": "Whether persistent personal memory across sessions is enabled."
+        },
+        "faceConsentGranted": {
+          "type": "boolean",
+          "description": "Whether the user explicitly consented to local face silhouette personalization."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when created (FieldValue.serverTimestamp())."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when last updated (FieldValue.serverTimestamp())."
+        }
+      },
+      "required": ["userId", "memoryEnabled", "faceConsentGranted", "createdAt", "updatedAt"]
+    },
+    "MemoryItem": {
+      "title": "MemoryItem",
+      "description": "A persistent cognitive memory item owned by the user and optionally approved from a Shadow insight.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Authenticated Firebase UID owning this memory."
+        },
+        "category": {
+          "type": "string",
+          "enum": ["GOAL", "PREFERENCE", "IDEA", "DECISION", "PATTERN", "PROBLEM", "OUTCOME"],
+          "description": "Category of cognitive memory."
+        },
+        "title": {
+          "type": "string",
+          "description": "Short memory title (1-120 chars)."
+        },
+        "content": {
+          "type": "string",
+          "description": "Detailed memory content (1-1000 chars)."
+        },
+        "approved": {
+          "type": "boolean",
+          "description": "True if explicitly approved by the user; false if pending user confirmation."
+        },
+        "source": {
+          "type": "string",
+          "enum": ["USER", "SHADOW_PROPOSED"],
+          "description": "Origin of the memory entry."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when created (FieldValue.serverTimestamp())."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when last updated (FieldValue.serverTimestamp())."
+        }
+      },
+      "required": ["userId", "category", "title", "content", "approved", "source", "createdAt", "updatedAt"]
+    },
+    "ConversationMessage": {
+      "title": "ConversationMessage",
+      "description": "A message turn in the user's continuous Shadow Room conversation.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Authenticated Firebase UID owning this conversation message."
+        },
+        "role": {
+          "type": "string",
+          "enum": ["USER", "SHADOW"],
+          "description": "Speaker role in the Shadow Room."
+        },
+        "text": {
+          "type": "string",
+          "description": "Message body (1-8000 chars)."
+        },
+        "reasoningMode": {
+          "type": "string",
+          "enum": ["GREETING", "UNDERSTAND", "CHALLENGE", "QUESTION", "BLIND_SPOT", "CREATIVE_SYNTHESIS"],
+          "description": "Primary internal cognitive mode reflected by this turn."
+        },
+        "clientOrder": {
+          "type": "integer",
+          "description": "Monotonic client timestamp/order in milliseconds for deterministic ordering."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when created (FieldValue.serverTimestamp())."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when last updated (FieldValue.serverTimestamp())."
+        }
+      },
+      "required": ["userId", "role", "text", "reasoningMode", "clientOrder", "createdAt", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Private user settings and consent preferences."
+    },
+    "/users/{userId}/memories/{memoryId}": {
+      "schema": { "$ref": "#/entities/MemoryItem" },
+      "description": "User's persistent cognitive memories and pending Shadow memory proposals."
+    },
+    "/users/{userId}/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/ConversationMessage" },
+      "description": "User's continuous conversation turns inside the Shadow Room."
+    }
+  }
+}

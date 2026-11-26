@@ -1,0 +1,6 @@
+{
+  "name": "Subconscious AI",
+  "description": "One Shadow. One Room. One Intelligence. A voice-first personal cognitive AI companion that challenges your reasoning, discovers blind spots, connects cross-domain ideas, and remembers approved context.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
